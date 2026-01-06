@@ -1,0 +1,849 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+  <title>MR GLOBAL PRO | التعليم في ماليزيا - مستوى النخبة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-primary: #c5a059;
+      --gold-soft: #f4ece1;
+      --luxury-black: #1a1a1a;
+      --luxury-white: #ffffff;
+      --luxury-bg: #fafafa;
+      --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+      --wa-green: #25D366;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--luxury-bg);
+      color: var(--luxury-black);
+    }
+
+    h1, h2, h3, .font-display {
+      font-family: 'Amiri', serif;
+    }
+
+    .gold-text {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .luxury-card {
+      background: white;
+      border: 1px solid rgba(197, 160, 89, 0.15);
+      border-radius: 32px;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    .luxury-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(197, 160, 89, 0.1);
+      border-color: var(--gold-primary);
+    }
+
+    .ticker-container {
+      background: #fdfaf5;
+      border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 10px 0;
+    }
+
+    .ticker-content {
+      display: inline-block;
+      animation: ticker 40s linear infinite;
+    }
+
+    @keyframes ticker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Logo Marquee Styles */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-container {
+      display: flex;
+      overflow: hidden;
+      user-select: none;
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+    .marquee-content {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: space-around;
+      min-width: 100%;
+      animation: marquee 20s linear infinite;
+    }
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+    }
+
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: rotate(45deg);
+      animation: shimmer 4s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -150%; }
+      100% { left: 150%; }
+    }
+
+    .gold-badge {
+      background: var(--gold-soft);
+      color: #8a6d3b;
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .hero-img-mask {
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(197, 160, 89, 0.2);
+    }
+
+    .wa-float {
+      animation: pulse-wa 2s infinite;
+    }
+
+    @keyframes pulse-wa {
+      0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+      70% { box-shadow: 0 0 0 20px rgba(37, 211, 102, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    }
+
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+    }
+  }
+  </script>
+</head>
+<body class="overflow-x-hidden selection:bg-yellow-100">
+
+  <!-- Top Info Bar -->
+  <div class="ticker-container text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+    <div class="ticker-content">
+      <span>• أكثر من 1500 طالب تم قبولهم بنجاح • شراكات حصرية مع أرقى جامعات ماليزيا • دعم ميداني 24/7 للطلاب العرب • خصومات خاصة لفترة محدودة على معاهد اللغة •</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="nav" class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-500 py-4 mt-10">
+    <div class="container mx-auto px-6 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-gradient-to-tr from-yellow-700 to-yellow-200 rounded-[12px] flex items-center justify-center shadow-lg border-2 border-yellow-500">
+          <span class="text-black font-black text-2xl">M</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-zinc-900 font-black tracking-widest text-xl leading-none">MR GLOBAL PRO</span>
+          <span class="text-yellow-600 font-bold text-[9px] tracking-[0.3em] uppercase">Education Advisory</span>
+        </div>
+      </div>
+      
+      <div class="hidden lg:flex items-center gap-8 font-bold text-xs uppercase text-zinc-600">
+        <a href="#home" class="hover:text-yellow-600 transition-colors">الرئيسية</a>
+        <a href="#guide" class="hover:text-yellow-600 transition-colors">دليل الطالب</a>
+        <a href="#universities" class="hover:text-yellow-600 transition-colors">الجامعات</a>
+        <a href="#institutes" class="hover:text-yellow-600 transition-colors">المعاهد</a>
+        <a href="#accommodation" class="hover:text-yellow-600 transition-colors">السكن</a>
+        
+        <div class="flex items-center gap-3">
+          <a href="https://wa.me/60143646834" target="_blank" class="w-10 h-10 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+          <a href="#apply" class="px-6 py-2 bg-zinc-900 text-white rounded-full hover:bg-yellow-600 transition-all text-[10px] font-black uppercase tracking-widest">Apply Now</a>
+        </div>
+      </div>
+
+      <button class="lg:hidden text-zinc-900" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="fixed inset-0 bg-white z-[100] hidden flex flex-col items-center justify-center gap-8 text-2xl font-black p-10 text-center">
+    <button class="absolute top-8 right-8 text-zinc-900" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">✕</button>
+    <a href="#home" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="hover:text-yellow-600">الرئيسية</a>
+    <a href="#guide" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="hover:text-yellow-600">دليل الطالب</a>
+    <a href="#universities" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="hover:text-yellow-600">الجامعات النخبوية</a>
+    <a href="#institutes" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="hover:text-yellow-600">المعاهد</a>
+    <a href="#accommodation" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="hover:text-yellow-600">السكن الفاخر</a>
+    <a href="https://wa.me/60143646834" class="text-green-600">واتساب مباشر</a>
+    <a href="#apply" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="bg-zinc-900 text-white px-10 py-4 rounded-full">سجل اهتمامك</a>
+  </div>
+
+  <!-- Hero Section -->
+  <header id="home" class="relative min-h-[90vh] flex items-center pt-32 pb-12 overflow-hidden bg-white">
+    <div class="absolute top-0 right-0 w-1/2 h-full bg-[#fdfaf5] -z-10"></div>
+    <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-8 text-center lg:text-right">
+        <div class="inline-flex items-center gap-2 px-4 py-1 bg-yellow-50 rounded-full border border-yellow-100">
+          <span class="w-2 h-2 bg-yellow-600 rounded-full animate-pulse"></span>
+          <span class="text-[10px] font-black uppercase tracking-widest text-yellow-700">Elite Admission Experts 2025</span>
+        </div>
+        
+        <h1 class="text-5xl lg:text-[5.5rem] font-black leading-[1.1] text-zinc-900 tracking-tight">
+          تعليم النخبة <br>
+          <span class="gold-text italic font-serif font-normal">يبدأ من هنا</span>
+        </h1>
+        
+        <p class="text-zinc-500 text-lg lg:text-xl max-w-xl lg:mr-0 mr-auto leading-relaxed border-r-4 border-yellow-600 pr-6">
+          اكتشف أرقى الجامعات في ماليزيا مع خدمات استشارية فاخرة تضمن لك القبول المباشر والتميز الأكاديمي.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+          <a href="https://wa.me/60143646834?text=أريد البدء في إجراءات التقديم للدراسة في ماليزيا" target="_blank" class="shimmer px-10 py-5 bg-zinc-900 text-white font-bold text-lg rounded-2xl shadow-xl hover:bg-yellow-600 transition-all text-center flex items-center justify-center gap-3">
+            <span>ابدأ رحلة التميز عبر واتساب</span>
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="relative flex justify-center">
+        <div class="hero-img-mask w-full max-w-md aspect-square bg-[#fcf6ba] relative">
+          <img src="images/hero_banner.jpg" alt="Students in Malaysia" class="w-full h-full object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-700">
+          <div class="absolute bottom-6 left-6 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-yellow-100 shadow-xl max-w-[240px]">
+            <p class="text-[10px] font-black uppercase text-yellow-600 mb-1">Global Partnership</p>
+            <p class="text-3xl font-black text-zinc-900">Elite</p>
+            <p class="text-[10px] text-zinc-500 font-bold mt-1">نحن الشريك الاستراتيجي لأفضل 1% من جامعات ماليزيا</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Partner Carousel -->
+  <section class="py-16 bg-white border-y border-zinc-100 overflow-hidden">
+    <div class="container mx-auto px-6 mb-8 text-center">
+      <p class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 mb-2">شركاء النجاح الأكاديمي</p>
+      <p class="text-zinc-600 font-bold text-sm">أكثر من 50 جامعة حكومية وخاصة و20 معهداً للغة تحت مظلة خدماتنا</p>
+    </div>
+    <div class="marquee-container">
+      <div class="marquee-content flex gap-12 lg:gap-24">
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">TAYLOR'S UNIVERSITY</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">ASIA PACIFIC UNIVERSITY</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">SUNWAY UNIVERSITY</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">MONASH MALAYSIA</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">SEGi UNIVERSITY</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">UTEM MALAYSIA</span>
+      </div>
+      <div class="marquee-content flex gap-12 lg:gap-24">
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">TAYLOR'S UNIVERSITY</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">ASIA PACIFIC UNIVERSITY</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">SUNWAY UNIVERSITY</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">MONASH MALAYSIA</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">SEGi UNIVERSITY</span>
+        <span class="text-2xl lg:text-3xl font-black text-zinc-300 hover:text-yellow-600 transition-colors cursor-default tracking-tighter">UTEM MALAYSIA</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Educational Ecosystem / Scale Section -->
+  <section id="scale" class="py-24 bg-[#fdfaf5]">
+    <div class="container mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-20 items-center">
+        <div class="order-2 lg:order-1 relative">
+           <div class="luxury-card bg-zinc-900 p-10 text-white space-y-6 relative z-10">
+              <h3 class="text-3xl font-black border-r-4 border-yellow-500 pr-4">منظومة تعليمية بلا حدود</h3>
+              <p class="text-zinc-400 leading-relaxed text-sm">نحن نوفر لك الوصول المباشر لأكثر من 50 جامعة ماليزية مرموقة وأكثر من 20 معهداً عالمياً لتعلم اللغة الإنجليزية. سواء كنت تبحث عن التميز التقني، الطبي، أو الإداري، فنحن نملك الحل.</p>
+              <div class="grid grid-cols-2 gap-4">
+                 <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <span class="block text-2xl font-black gold-text">50+</span>
+                    <span class="text-[10px] text-zinc-500 uppercase font-black">University</span>
+                 </div>
+                 <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <span class="block text-2xl font-black gold-text">20+</span>
+                    <span class="text-[10px] text-zinc-500 uppercase font-black">Language Inst.</span>
+                 </div>
+              </div>
+              <p class="text-[10px] text-yellow-500/70 font-bold italic">* ملاحظة: الأسعار المعروضة هي أسعار تقريبية وقد تختلف بنسب بسيطة (زيادة أو نقصاناً) حسب سعر صرف العملة وقت التسجيل.</p>
+           </div>
+           <div class="absolute -bottom-10 -left-10 w-full h-full bg-yellow-600/10 -z-10 rounded-[40px]"></div>
+        </div>
+        <div class="order-1 lg:order-2 space-y-8 text-right">
+           <h2 class="text-4xl lg:text-6xl font-black text-zinc-900">تنوع <span class="gold-text">لا محدود</span> في التخصصات</h2>
+           <div class="flex flex-wrap gap-3 justify-end">
+              <span class="px-5 py-2 bg-white border border-zinc-200 rounded-full text-xs font-bold text-zinc-600">هندسة الطب الحيوي</span>
+              <span class="px-5 py-2 bg-white border border-zinc-200 rounded-full text-xs font-bold text-zinc-600">الذكاء الاصطناعي</span>
+              <span class="px-5 py-2 bg-white border border-zinc-200 rounded-full text-xs font-bold text-zinc-600">الأمن السيبراني</span>
+              <span class="px-5 py-2 bg-white border border-zinc-200 rounded-full text-xs font-bold text-zinc-600">الطب البشري</span>
+              <span class="px-5 py-2 bg-white border border-zinc-200 rounded-full text-xs font-bold text-zinc-600">إدارة الأعمال الدولية</span>
+              <span class="px-5 py-2 bg-white border border-zinc-200 rounded-full text-xs font-bold text-zinc-600">الفنون الإبداعية</span>
+              <span class="px-5 py-2 bg-white border border-zinc-200 rounded-full text-xs font-bold text-zinc-600">قانون دولي</span>
+              <span class="px-5 py-2 bg-white border border-zinc-200 rounded-full text-xs font-bold text-zinc-600">تكنولوجيا الطيران</span>
+           </div>
+           <p class="text-zinc-500 text-lg leading-relaxed">فقط أخبرنا ما هو حلمك، ميزانيتك، ومتى تنوي البدء، وسنقوم بتصميم الخطة الدراسية التي تتجاوز توقعاتك.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student Guide Section -->
+  <section id="guide" class="py-24 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="max-w-4xl mx-auto text-center mb-16 space-y-6">
+        <h2 class="text-4xl lg:text-6xl font-black text-zinc-900">دليل <span class="gold-text">الطالب الذكي</span></h2>
+        <p class="text-zinc-500 text-lg lg:text-xl leading-relaxed">كل ما تحتاج معرفته عن وجهتك الدراسية وكيف نجعل رحلتك أسهل وأكثر رفاهية.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-12 items-center mb-24">
+        <div class="space-y-8 text-right">
+          <h3 class="text-3xl font-black text-zinc-900 border-r-4 border-yellow-600 pr-4">لماذا ماليزيا هي الخيار الأول؟</h3>
+          <div class="grid gap-6">
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center text-xl flex-shrink-0">📜</div>
+              <div>
+                <h4 class="text-lg font-black text-zinc-900 mb-1">شهادات مزدوجة وعالمية</h4>
+                <p class="text-zinc-500 text-sm">يمكنك الحصول على شهادة من بريطانيا أو أستراليا وأنت في ماليزيا بفضل الشراكات الاستراتيجية.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center text-xl flex-shrink-0">💰</div>
+              <div>
+                <h4 class="text-lg font-black text-zinc-900 mb-1">تكلفة معيشة ذكية</h4>
+                <p class="text-zinc-500 text-sm">جودة حياة عالية وتكاليف دراسة ومعيشة أقل بنسبة 60% مقارنة بالدول الغربية.</p>
+              </div>
+            </div>
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center text-xl flex-shrink-0">🕌</div>
+              <div>
+                <h4 class="text-lg font-black text-zinc-900 mb-1">بيئة ملائمة للطلاب العرب</h4>
+                <p class="text-zinc-500 text-sm">توافر الأكل الحلال، المساجد، والتقارب الثقافي يجعل الاندماج سريعاً وسهلاً.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="luxury-card overflow-hidden p-2 bg-[#fdfaf5]">
+            <img src="images/malaysia_culture.jpg" class="rounded-[28px] w-full h-full object-cover grayscale-[10%]" alt="Malaysia Culture">
+          </div>
+          <div class="absolute -bottom-6 -right-6 glass-nav p-6 rounded-3xl shadow-2xl border border-yellow-100 max-w-[200px]">
+             <p class="text-xs font-black text-yellow-700 mb-1">Modern KL</p>
+             <p class="text-zinc-500 text-[10px]">استمتع بالحياة في واحدة من أرقى عواصم آسيا.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-12">
+        <h3 class="text-3xl font-black text-zinc-900 text-center">خدماتنا: رفيقك من المطار حتى التخرج</h3>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="luxury-card p-8 space-y-4 text-center">
+            <div class="w-16 h-16 bg-zinc-900 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-lg">🎟️</div>
+            <h4 class="text-lg font-black text-zinc-900">تأمين القبول الفوري</h4>
+            <p class="text-zinc-500 text-xs leading-relaxed">نمتلك علاقات مباشرة مع إدارات التسجيل لضمان أسرع رد على طلبك.</p>
+          </div>
+          <div class="luxury-card p-8 space-y-4 text-center">
+            <div class="w-16 h-16 bg-zinc-900 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-lg">🛂</div>
+            <h4 class="text-lg font-black text-zinc-900">إرشاد الفيزا الذهبي</h4>
+            <p class="text-zinc-500 text-xs leading-relaxed">تجهيز ملف الفيزا باحترافية لضمان نسبة قبول 100% دون تعقيدات.</p>
+          </div>
+          <div class="luxury-card p-8 space-y-4 text-center">
+            <div class="w-16 h-16 bg-zinc-900 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-lg">🏢</div>
+            <h4 class="text-lg font-black text-zinc-900">تأمين السكن الفاخر</h4>
+            <p class="text-zinc-500 text-xs leading-relaxed">نعاين السكن قبل وصولك ونختار لك الأفضل جودة وأمناً وقرباً من جامعتك.</p>
+          </div>
+          <div class="luxury-card p-8 space-y-4 text-center">
+            <div class="w-16 h-16 bg-zinc-900 text-white rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-lg">🚗</div>
+            <h4 class="text-lg font-black text-zinc-900">استقبال VIP</h4>
+            <p class="text-zinc-500 text-xs leading-relaxed">ننتظرك في المطار بسيارة خاصة، نوفر لك شريحة إنترنت، ونوصلك لسكنك.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Malaysian Universities Info Section -->
+  <section class="py-40 bg-gradient-to-b from-white via-yellow-50 to-white relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-yellow-100/30 blur-[140px] rounded-full -translate-y-1/2 translate-x-1/4"></div>
+    <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100/20 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2"></div>
+    <div class="container mx-auto px-6 relative z-10">
+      <!-- Header -->
+      <div class="max-w-5xl mx-auto text-center mb-24 space-y-6 animate-fadeInUp">
+        <div class="inline-block px-8 py-3 bg-yellow-100 text-yellow-800 rounded-full font-bold text-sm tracking-widest uppercase mb-4 shadow-lg">🌟 الاختيار الأمثل</div>
+        <h2 class="text-7xl lg:text-8xl font-black text-zinc-900 leading-tight drop-shadow-lg">الجامعات في <span class="bg-gradient-to-r from-yellow-600 to-yellow-500 bg-clip-text text-transparent">ماليزيا</span></h2>
+        <p class="text-zinc-700 text-lg lg:text-xl leading-relaxed max-w-3xl mx-auto font-medium">تشكل جامعات ماليزيا جزءًا مهمًا من التعليم العالي في المنطقة، وهي تقدم مجموعة واسعة من البرامج الأكاديمية في مختلف التخصصات بجودة عالمية معترف بها دوليًا.</p>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="grid lg:grid-cols-2 gap-24 items-center mb-24">
+        <!-- Left: Image -->
+        <div class="rounded-[50px] overflow-hidden shadow-2xl border-8 border-white h-96 lg:h-full min-h-[550px] relative group">
+          <img src="images/malaysia_universities.jpg" alt="Malaysian Universities" class="w-full h-full object-cover hover:scale-110 transition-transform duration-1000 group-hover:brightness-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        </div>
+
+        <!-- Right: Features Grid -->
+        <div class="space-y-6">
+          <div class="p-8 bg-gradient-to-br from-yellow-50 to-white rounded-[30px] border-2 border-yellow-100/50 hover:shadow-xl transition-shadow">
+            <h3 class="text-2xl font-black text-zinc-900 mb-3 flex items-center gap-3">
+              <span class="text-4xl">🎓</span> التنوع والتخصص
+            </h3>
+            <p class="text-zinc-600 leading-relaxed">تضم جامعات ماليزيا مؤسسات متنوعة ومتخصصة تقدم برامج في مجموعة واسعة من التخصصات، بدءًا من العلوم والهندسة إلى الأعمال والفنون والتكنولوجيا.</p>
+          </div>
+
+          <div class="p-8 bg-gradient-to-br from-blue-50 to-white rounded-[30px] border-2 border-blue-100/50 hover:shadow-xl transition-shadow">
+            <h3 class="text-2xl font-black text-zinc-900 mb-3 flex items-center gap-3">
+              <span class="text-4xl">⭐</span> الجودة الأكاديمية
+            </h3>
+            <p class="text-zinc-600 leading-relaxed">تعتبر بعض الجامعات في ماليزيا من بين أفضل الجامعات في المنطقة وتحظى بسمعة عالية على المستوى العالمي مع اعتمادات دولية مرموقة.</p>
+          </div>
+
+          <div class="p-8 bg-gradient-to-br from-purple-50 to-white rounded-[30px] border-2 border-purple-100/50 hover:shadow-xl transition-shadow">
+            <h3 class="text-2xl font-black text-zinc-900 mb-3 flex items-center gap-3">
+              <span class="text-4xl">🌍</span> اللغة الإنجليزية
+            </h3>
+            <p class="text-zinc-600 leading-relaxed">اللغة الإنجليزية تُستخدم على نطاق واسع كلغة تدريس في الجامعات الماليزية، مما يجعلها وجهة مفضلة للطلاب الدوليين.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Section -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+        <div class="p-8 bg-white border-2 border-yellow-100 rounded-[30px] hover:shadow-2xl transition-all group cursor-pointer">
+          <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🔬</div>
+          <h4 class="text-xl font-black text-zinc-900 mb-3">التكنولوجيا والبحث</h4>
+          <p class="text-zinc-600 text-sm leading-relaxed">تتمتع الجامعات بتقنيات حديثة ومرافق متقدمة، مما يعزز البحث العلمي ويوفر بيئة تعلم عصرية وحديثة.</p>
+        </div>
+
+        <div class="p-8 bg-white border-2 border-blue-100 rounded-[30px] hover:shadow-2xl transition-all group cursor-pointer">
+          <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🤝</div>
+          <h4 class="text-xl font-black text-zinc-900 mb-3">التعاون الدولي</h4>
+          <p class="text-zinc-600 text-sm leading-relaxed">تعاونت العديد من الجامعات الماليزية مع جامعات ومؤسسات عالمية، مما يوفر فرصًا للدراسة والبحث في بيئات دولية.</p>
+        </div>
+
+        <div class="p-8 bg-white border-2 border-green-100 rounded-[30px] hover:shadow-2xl transition-all group cursor-pointer">
+          <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🌏</div>
+          <h4 class="text-xl font-black text-zinc-900 mb-3">التفاعل الثقافي</h4>
+          <p class="text-zinc-600 text-sm leading-relaxed">تعكس الجامعات التنوع الثقافي في ماليزيا، مما يمنح الطلاب فرصة للتفاعل مع أنماط حياة وتقاليد متنوعة.</p>
+        </div>
+
+        <div class="p-8 bg-white border-2 border-yellow-100 rounded-[30px] hover:shadow-2xl transition-all group cursor-pointer">
+          <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">💰</div>
+          <h4 class="text-xl font-black text-zinc-900 mb-3">التكلفة المعقولة</h4>
+          <p class="text-zinc-600 text-sm leading-relaxed">بالمقارنة مع وجهات دراسية أخرى، تقدم جامعات ماليزيا تكلفة دراسية معقولة وخيارات سكن ومعيشة برسوم منخفضة.</p>
+        </div>
+
+        <div class="p-8 bg-white border-2 border-purple-100 rounded-[30px] hover:shadow-2xl transition-all group cursor-pointer">
+          <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🌿</div>
+          <h4 class="text-xl font-black text-zinc-900 mb-3">البيئة الطبيعية</h4>
+          <p class="text-zinc-600 text-sm leading-relaxed">تتمتع ماليزيا بطقس دافئ ومناظر طبيعية خضراء جميلة توفر بيئة مريحة لدراسة مشجعة وحياة طالبية متوازنة.</p>
+        </div>
+
+        <div class="p-8 bg-white border-2 border-red-100 rounded-[30px] hover:shadow-2xl transition-all group cursor-pointer">
+          <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🏆</div>
+          <h4 class="text-xl font-black text-zinc-900 mb-3">الاعتراف العالمي</h4>
+          <p class="text-zinc-600 text-sm leading-relaxed">شهادات الجامعات الماليزية معترف بها دوليًا وتحظى بقبول من صاحب العمل في جميع أنحاء العالم.</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="text-center p-12 bg-gradient-to-r from-yellow-50 to-yellow-100/50 rounded-[40px] border-2 border-yellow-200">
+        <h3 class="text-3xl lg:text-4xl font-black text-zinc-900 mb-4">هل أنت مستعد للالتحاق بإحدى الجامعات الماليزية المرموقة؟</h3>
+        <p class="text-zinc-600 text-lg mb-8 max-w-2xl mx-auto">تواصل معنا الآن واحصل على استشارة مجانية مفصلة عن أفضل الجامعات والبرامج الدراسية المناسبة لك.</p>
+        <a href="#universities" class="inline-block px-12 py-5 bg-zinc-900 text-white font-black rounded-2xl hover:bg-yellow-600 transition-all text-lg">اكتشف الجامعات النخبوية</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Universities Section -->
+  <section id="universities" class="py-24 bg-[#fafafa]">
+    <div class="container mx-auto px-6">
+      <div class="max-w-4xl mx-auto text-center mb-20 space-y-6">
+        <h2 class="text-4xl lg:text-6xl font-black text-zinc-900">صروح <span class="gold-text">العلم الراقية</span></h2>
+        <p class="text-zinc-500 text-lg lg:text-xl leading-relaxed">نقدم لك مفاتيح القبول في أرقى الجامعات الماليزية ذات الاعتراف العالمي والاعتمادات الدولية المرموقة.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-10">
+        <!-- UTeM Card -->
+        <div class="luxury-card p-8 lg:p-12 relative overflow-hidden group border-2 border-yellow-500/30 bg-yellow-50/10">
+          <div class="absolute -top-10 -right-10 w-40 h-40 bg-yellow-100/50 rounded-full group-hover:bg-yellow-100 transition-colors"></div>
+          <div class="relative z-10 space-y-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="gold-badge mb-3 inline-block">الأفضل والأرخص والأكثر طلباً ⭐</span>
+                <h3 class="text-3xl lg:text-4xl font-black text-zinc-900">UTeM University</h3>
+              </div>
+              <div class="w-16 h-16 bg-zinc-900 text-white rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-yellow-100">⚙️</div>
+            </div>
+            <p class="text-zinc-500 leading-relaxed font-black text-right text-sm">جامعة ماليزيا التقنية بملقا - الخيار الأول للطلاب الباحثين عن جودة التعليم الحكومي المرموق بأقل التكاليف في ماليزيا.</p>
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-200">
+              <div class="space-y-1 text-right">
+                <span class="text-[10px] font-black text-yellow-700 uppercase tracking-widest">أبرز البرامج</span>
+                <p class="text-xs font-bold text-zinc-800">الهندسة، تكنولوجيا المعلومات، الإدارة التقنية</p>
+              </div>
+              <div class="space-y-1 text-right">
+                <span class="text-[10px] font-black text-yellow-700 uppercase tracking-widest">التكاليف</span>
+                <p class="text-xs font-black text-green-700 text-left">تبدأ من 2,500$ سنوياً</p>
+              </div>
+            </div>
+            <a href="https://wa.me/60143646834?text=أريد معلومات أكثر عن التسجيل في جامعة UTEM" target="_blank" class="block w-full py-5 bg-[#25D366] text-white text-center font-black rounded-2xl hover:scale-[1.02] transition-all shadow-xl flex items-center justify-center gap-3">
+              <span>واتساب مباشر لجامعة UTEM</span>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Taylor's University Card -->
+        <div class="luxury-card p-8 lg:p-12 relative overflow-hidden group text-right">
+          <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#fdfaf5] rounded-full group-hover:bg-yellow-50 transition-colors"></div>
+          <div class="relative z-10 space-y-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="gold-badge mb-3 inline-block">QS World #251</span>
+                <h3 class="text-3xl lg:text-4xl font-black text-zinc-900">Taylor's University</h3>
+              </div>
+              <div class="w-16 h-16 glass-nav rounded-2xl flex items-center justify-center text-3xl shadow-sm border border-yellow-100">🎓</div>
+            </div>
+            <p class="text-zinc-500 leading-relaxed font-medium text-sm">الجامعة الخاصة الأولى في جنوب شرق آسيا. تتميز ببيئة تعليمية فاخرة وشبكة علاقات دولية واسعة.</p>
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-100">
+              <div class="space-y-1">
+                <span class="text-[10px] font-black text-yellow-600 uppercase tracking-widest">أبرز البرامج</span>
+                <p class="text-xs font-bold text-zinc-800">إدارة الفنادق، الأعمال، القانون، الطب</p>
+              </div>
+              <div class="space-y-1">
+                <span class="text-[10px] font-black text-yellow-600 uppercase tracking-widest text-left">الاعتمادات</span>
+                <p class="text-xs font-bold text-zinc-800 text-left">AACSB, MQA, QS 5-Stars</p>
+              </div>
+            </div>
+            <a href="https://wa.me/60143646834?text=أريد معلومات عن التسجيل في جامعة تايلورز" target="_blank" class="block w-full py-5 bg-zinc-900 text-white text-center font-black rounded-2xl hover:bg-yellow-600 transition-all shadow-xl">اطلب عرض القبول عبر واتساب</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Institutes Section -->
+  <section id="institutes" class="py-24 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="max-w-3xl mb-20 text-right">
+        <h2 class="text-4xl lg:text-6xl font-black text-zinc-900 mb-6">باقات <span class="gold-text">تعلم اللغة</span></h2>
+        <p class="text-zinc-500 text-lg">عروض حصرية تشمل الفيزا والسكن واستقبال المطار وكافة الخدمات.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- EMS Card -->
+        <div class="luxury-card border-2 border-yellow-500/20 flex flex-col overflow-hidden text-right">
+          <div class="bg-yellow-50 p-10 pb-0">
+            <h3 class="text-3xl font-black text-zinc-900">معهد EMS</h3>
+            <p class="text-yellow-700 font-bold text-sm mt-2">الأكثر تميزاً ودراسة مكثفة (6 ساعات يومياً)</p>
+          </div>
+          <div class="p-10 space-y-6 flex-grow">
+            <div class="space-y-1">
+              <span class="block text-zinc-400 line-through text-xs">السعر الرسمي: 17,580 RM</span>
+              <span class="text-4xl font-black text-zinc-900">15,650 RM</span>
+              <p class="text-zinc-500 font-bold text-xs">~ 13,840 ريال سعودي | ~ 3,520 دولار</p>
+            </div>
+            <div class="bg-yellow-100/50 p-4 rounded-2xl border border-yellow-200">
+              <p class="text-[10px] font-bold text-yellow-800 italic">🎁 عرض النخبة: سجل 5 أشهر واحصل على شهر مجاناً</p>
+            </div>
+            <ul class="space-y-3 text-zinc-500 text-xs">
+              <li class="flex items-center justify-end gap-2"><span>شامل الفيزا والتأمين الصحي</span> ✓</li>
+              <li class="flex items-center justify-end gap-2"><span>استقبال VIP المطار وشريحة نت شهر</span> ✓</li>
+              <li class="flex items-center justify-end gap-2"><span>مساعدة في توفير السكن المناسب</span> ✓</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/60143646834?text=أريد عرض معهد EMS (5+1 مجاني)" target="_blank" class="m-10 mt-0 p-5 bg-[#25D366] text-white text-center font-black rounded-2xl hover:scale-[1.05] transition-all shadow-lg flex items-center justify-center gap-2">
+            <span>احجز واتساب الآن</span>
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+        </div>
+
+        <!-- Stratford -->
+        <div class="luxury-card flex flex-col overflow-hidden text-right">
+          <div class="bg-zinc-50 p-10 pb-0">
+            <h3 class="text-3xl font-black text-zinc-900">معهد Stratford</h3>
+            <p class="text-zinc-500 font-bold text-xs mt-2">دراسة 4 ساعات يومياً / 5 أيام</p>
+          </div>
+          <div class="p-10 space-y-6 flex-grow">
+            <div class="space-y-1">
+              <span class="text-4xl font-black text-zinc-900">12,250 RM</span>
+              <p class="text-zinc-500 font-bold text-xs">~ 10,840 ريال سعودي | ~ 2,760 دولار</p>
+            </div>
+            <ul class="space-y-3 text-zinc-500 text-xs">
+              <li class="flex items-center justify-end gap-2"><span>شامل كافة الكتب الدراسية</span> ✓</li>
+              <li class="flex items-center justify-end gap-2"><span>شامل الفيزا والتأمين الصحي</span> ✓</li>
+              <li class="flex items-center justify-end gap-2"><span>استقبال المطار وباقة ترحيب</span> ✓</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/60143646834?text=أريد معلومات عن معهد ستراتفورد" target="_blank" class="m-10 mt-0 p-5 border border-zinc-200 text-zinc-900 text-center font-black rounded-2xl hover:bg-zinc-50 transition-all">تواصل واتساب</a>
+        </div>
+
+        <!-- Big Ben -->
+        <div class="luxury-card flex flex-col overflow-hidden text-right">
+          <div class="bg-zinc-50 p-10 pb-0">
+            <h3 class="text-3xl font-black text-zinc-900">معهد Big Ben</h3>
+            <p class="text-zinc-500 font-bold text-xs mt-2">بيئة تعليمية عالمية (6 أشهر)</p>
+          </div>
+          <div class="p-10 space-y-6 flex-grow">
+            <div class="space-y-1">
+              <span class="text-4xl font-black text-zinc-900">15,450 RM</span>
+              <p class="text-zinc-500 font-bold text-xs">~ 13,670 ريال سعودي | ~ 3,480 دولار</p>
+            </div>
+            <ul class="space-y-3 text-zinc-500 text-xs">
+              <li class="flex items-center justify-end gap-2"><span>شامل الفيزا والتأمين الصحي</span> ✓</li>
+              <li class="flex items-center justify-end gap-2"><span>استقبال المطار وشريحة اتصال ونت</span> ✓</li>
+              <li class="flex items-center justify-end gap-2"><span>مساعدة احترافية في إيجاد السكن</span> ✓</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/60143646834?text=أريد معلومات عن معهد بيج بن" target="_blank" class="m-10 mt-0 p-5 border border-zinc-200 text-zinc-900 text-center font-black rounded-2xl hover:bg-zinc-50 transition-all">تواصل واتساب</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Luxury Accommodation -->
+  <section id="accommodation" class="py-24 bg-[#fafafa]">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-20 space-y-4">
+        <h2 class="text-4xl lg:text-6xl font-black text-zinc-900 tracking-tight text-right">إقامة تليق <span class="gold-text">بطموحك</span></h2>
+        <p class="text-zinc-500 text-lg text-right">نحن لا نوفر لك سكناً فحسب، بل نختار لك منزلاً آمناً وراقياً.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <div class="luxury-card overflow-hidden group border-none shadow-none bg-[#fdfaf5]">
+          <div class="h-80 overflow-hidden rounded-t-[32px]"><img src="images/malaysia_kuala_lumpur.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></div>
+          <div class="p-8 space-y-4 text-right">
+            <h3 class="text-2xl font-black text-zinc-900 text-right">شقق البرجين (KLCC)</h3>
+            <p class="text-zinc-500 text-xs leading-relaxed text-right">إقامة VIP فندقية في قلب العاصمة مع إطلالات ساحرة ومرافق عالمية.</p>
+            <div class="flex justify-between items-center pt-4 border-t border-zinc-200">
+              <a href="https://wa.me/60143646834?text=أريد الاستفسار عن سكن KLCC" target="_blank" class="text-green-600 font-black text-[10px] hover:underline">استفسار واتساب</a>
+              <span class="text-xl font-black text-zinc-900">$600 - $1000</span>
+            </div>
+          </div>
+        </div>
+        <div class="luxury-card overflow-hidden group border-none shadow-none bg-[#fdfaf5]">
+          <div class="h-80 overflow-hidden rounded-t-[32px]"><img src="images/service_university.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></div>
+          <div class="p-8 space-y-4 text-right">
+            <h3 class="text-2xl font-black text-zinc-900 text-right">المساكن المخدمة</h3>
+            <p class="text-zinc-500 text-xs leading-relaxed text-right">أثاث عصري متكامل، خدمات صيانة تنظيف دورية، وبيئة دراسية هادئة.</p>
+            <div class="flex justify-between items-center pt-4 border-t border-zinc-200">
+              <a href="https://wa.me/60143646834?text=أريد الاستفسار عن المساكن المخدمة" target="_blank" class="text-green-600 font-black text-[10px] hover:underline">استفسار واتساب</a>
+              <span class="text-xl font-black text-zinc-900">$400 - $700</span>
+            </div>
+          </div>
+        </div>
+        <div class="luxury-card overflow-hidden group border-none shadow-none bg-[#fdfaf5]">
+          <div class="h-80 overflow-hidden rounded-t-[32px]"><img src="images/contact_office.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></div>
+          <div class="p-8 space-y-4 text-right">
+            <h3 class="text-2xl font-black text-zinc-900 text-right">القرى الطلابية</h3>
+            <p class="text-zinc-500 text-xs leading-relaxed text-right">بيئة شبابية اجتماعية شاملة فواتير الخدمات وحافلات نقل مجانية للجامعات.</p>
+            <div class="flex justify-between items-center pt-4 border-t border-zinc-200">
+              <a href="https://wa.me/60143646834?text=أريد الاستفسار عن القرى الطلابية" target="_blank" class="text-green-600 font-black text-[10px] hover:underline">استفسار واتساب</a>
+              <span class="text-xl font-black text-zinc-900">$250 - $450</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA / Apply Section - REIMAGINED -->
+  <section id="apply" class="py-32 bg-zinc-900 text-white overflow-hidden relative">
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-yellow-600/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-start">
+        
+        <!-- Left Section: Image + Value Prop -->
+        <div class="space-y-12 text-right lg:order-2">
+           <div class="hidden lg:block rounded-[40px] overflow-hidden shadow-2xl border-4 border-yellow-100">
+             <img src="images/about_team.jpg" alt="Our Team" class="w-full h-full object-cover">
+           </div>
+           <div class="space-y-6">
+              <h2 class="text-5xl lg:text-7xl font-black leading-tight tracking-tighter">حلول تعليمية <br><span class="gold-text font-serif italic font-normal">مفصّلة لك</span></h2>
+              <p class="text-zinc-400 text-lg leading-relaxed">أياً كان تخصصك، ميزانيتك، أو التحديات التي تواجهك، فريقنا من الخبراء سيصمم لك المسار الأسرع والأفضل للنجاح في ماليزيا.</p>
+           </div>
+
+           <div class="grid sm:grid-cols-2 gap-6">
+              <div class="p-6 bg-white/5 border border-white/10 rounded-[30px] space-y-3">
+                 <div class="text-2xl">⚡</div>
+                 <h4 class="font-black">خبرة ميدانية</h4>
+                 <p class="text-zinc-500 text-xs leading-relaxed">نحن متواجدون في كوالالمبور لنكون معك خطوة بخطوة.</p>
+              </div>
+              <div class="p-6 bg-white/5 border border-white/10 rounded-[30px] space-y-3">
+                 <div class="text-2xl">🛡️</div>
+                 <h4 class="font-black">ضمان القبول</h4>
+                 <p class="text-zinc-500 text-xs leading-relaxed">نقدم لك خيارات مضمونة تتوافق مع ملفك الأكاديمي.</p>
+              </div>
+           </div>
+
+           <div class="space-y-6 pt-6">
+              <p class="text-zinc-400 font-bold text-xs uppercase tracking-[0.3em]">Specialized Direct Channels</p>
+              <div class="flex gap-4 justify-end">
+                 <a href="https://wa.me/60143646834" target="_blank" class="px-8 py-4 bg-[#25D366] text-white rounded-2xl font-black text-sm flex items-center gap-3 hover:scale-105 transition-transform shadow-2xl">
+                    <span>مدير القبول المباشر</span>
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                 </a>
+              </div>
+           </div>
+        </div>
+
+        <!-- Right Section: The Advanced Form -->
+        <div class="bg-white/5 border border-white/10 p-10 lg:p-14 rounded-[50px] shadow-2xl backdrop-blur-md lg:order-1">
+           <h3 class="text-3xl font-black mb-10 text-right border-r-4 border-yellow-500 pr-4 italic">صمّم مستقبلك الآن</h3>
+           <form class="space-y-6" onsubmit="event.preventDefault(); window.handleApply(event);">
+              <div class="grid sm:grid-cols-2 gap-6">
+                 <div class="space-y-1">
+                    <label class="text-[10px] font-black uppercase text-zinc-500 mr-2 block text-right">Name / الاسم</label>
+                    <input type="text" id="form-name" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-yellow-600 transition-all text-right font-bold">
+                 </div>
+                 <div class="space-y-1">
+                    <label class="text-[10px] font-black uppercase text-zinc-500 mr-2 block text-right">WhatsApp / الواتساب</label>
+                    <input type="tel" id="form-phone" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-yellow-600 transition-all text-right font-bold placeholder-zinc-700" placeholder="+966 ...">
+                 </div>
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-6">
+                 <div class="space-y-1">
+                    <label class="text-[10px] font-black uppercase text-zinc-500 mr-2 block text-right">Major / التخصص</label>
+                    <input type="text" id="form-major" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-yellow-600 transition-all text-right font-bold placeholder-zinc-700" placeholder="هندسة، طب، لغة...">
+                 </div>
+                 <div class="space-y-1">
+                    <label class="text-[10px] font-black uppercase text-zinc-500 mr-2 block text-right">Budget / الميزانية</label>
+                    <input type="text" id="form-budget" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-yellow-600 transition-all text-right font-bold placeholder-zinc-700" placeholder="مثلاً: 5000$ سنوياً">
+                 </div>
+              </div>
+
+              <div class="space-y-1">
+                 <label class="text-[10px] font-black uppercase text-zinc-500 mr-2 block text-right">Start Date / موعد التسجيل المخطط له</label>
+                 <select id="form-date" class="w-full bg-zinc-800 border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-yellow-600 transition-all text-right font-bold">
+                    <option value="قريباً جداً">قريباً جداً (أقل من شهر)</option>
+                    <option value="خلال 3 أشهر">خلال 3 أشهر</option>
+                    <option value="خلال 6 أشهر">خلال 6 أشهر</option>
+                    <option value="بداية العام القادم">بداية العام القادم</option>
+                 </select>
+              </div>
+
+              <div class="space-y-1">
+                 <label class="text-[10px] font-black uppercase text-zinc-500 mr-2 block text-right">Your Problem or Needs / ما الذي تبحث عنه؟</label>
+                 <textarea id="form-needs" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white outline-none focus:border-yellow-600 transition-all text-right font-bold h-32 placeholder-zinc-700" placeholder="أخبرنا عن مشكلتك أو استفسارك الخاص..."></textarea>
+              </div>
+
+              <button type="submit" class="shimmer w-full py-6 bg-gradient-to-r from-yellow-700 to-yellow-500 text-black font-black text-lg rounded-2xl shadow-2xl hover:scale-[1.02] transition-transform">إرسال لمدير الاستشارات VIP</button>
+              <p class="text-[9px] text-zinc-500 text-center italic mt-4">نحن نؤمن لك الحل الأنسب بناءً على معطياتك الشخصية بماليزيا.</p>
+           </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Chat Window -->
+  <div id="ai-chat-window" class="fixed bottom-32 left-6 right-6 lg:left-auto lg:right-10 lg:w-[480px] h-[720px] bg-white rounded-[50px] border border-zinc-100 flex-col overflow-hidden hidden z-[60] shadow-2xl flex">
+    <div class="p-10 border-b border-zinc-50 flex justify-between items-center bg-[#fdfaf5]">
+      <div class="flex items-center gap-5 text-right">
+        <div class="w-14 h-14 bg-zinc-900 rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-zinc-900/20">🤖</div>
+        <div class="flex flex-col text-right">
+          <span class="text-zinc-900 font-black text-lg">المستشار الذكي</span>
+          <span class="text-[10px] text-green-600 font-black uppercase tracking-[0.4em]">Elite Support - Online</span>
+        </div>
+      </div>
+      <button onclick="document.getElementById('ai-chat-window').classList.add('hidden')" class="text-zinc-400 hover:text-zinc-900 transition-colors text-2xl">✕</button>
+    </div>
+    <div id="ai-chat-messages" class="flex-grow p-10 overflow-y-auto flex flex-col gap-8 hide-scrollbar bg-[#fafafa]">
+      <div class="bg-white border border-zinc-100 p-6 rounded-[35px] rounded-tl-none text-base self-start max-w-[85%] leading-relaxed text-right shadow-sm">
+        أهلاً بك في عالم التميز الدراسي. أنا مستشارك الذكي في MR Global Pro. كيف يمكنني إرشادك اليوم نحو أفضل المسارات التعليمية في ماليزيا؟
+      </div>
+    </div>
+    <form id="ai-chat-form" class="p-8 bg-white border-t border-zinc-50 flex gap-4">
+      <input id="ai-chat-input" type="text" placeholder="اكتب استفسارك هنا..." class="flex-grow bg-[#fafafa] border border-zinc-100 p-6 rounded-2xl text-base focus:border-yellow-600 outline-none text-right font-bold">
+      <button type="submit" class="w-16 h-16 bg-zinc-900 text-white rounded-2xl flex items-center justify-center font-black shadow-lg">↵</button>
+    </form>
+  </div>
+
+  <!-- WhatsApp Floating Button (Left) - Smaller Size -->
+  <a href="https://wa.me/60143646834?text=السلام عليكم، أريد استشارة تعليمية بخصوص الدراسة في ماليزيا" target="_blank" class="fixed bottom-6 left-6 z-[60] flex items-center gap-4 group">
+    <div class="w-16 h-16 bg-[#25D366] rounded-[28px] flex items-center justify-center text-white text-4xl shadow-xl hover:scale-110 transition-all cursor-pointer wa-float animate-pulse">
+      <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </div>
+  </a>
+
+  <footer class="py-32 border-t border-zinc-100 bg-[#fdfaf5]">
+    <div class="container mx-auto px-6 text-center space-y-16">
+      <div class="flex flex-col items-center gap-6">
+        <div class="w-20 h-20 bg-zinc-900 rounded-[30px] flex items-center justify-center shadow-2xl">
+          <span class="text-white font-black text-4xl">M</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-zinc-900 font-black tracking-[0.6em] text-3xl uppercase">MR GLOBAL PRO</span>
+          <span class="text-yellow-600 font-bold text-xs tracking-[0.4em] uppercase mt-2">The Pinnacle of Education Advisory</span>
+        </div>
+      </div>
+      
+      <div class="flex flex-wrap justify-center gap-12 text-xs font-black text-zinc-400 uppercase tracking-[0.3em]">
+        <a href="#home" class="hover:text-yellow-600 transition-all">Home</a>
+        <a href="#guide" class="hover:text-yellow-600 transition-all">Student Guide</a>
+        <a href="#universities" class="hover:text-yellow-600 transition-all">Elite Universities</a>
+        <a href="#institutes" class="hover:text-yellow-600 transition-all">Language</a>
+        <a href="#accommodation" class="hover:text-yellow-600 transition-all">VIP Housing</a>
+        <a href="#apply" class="hover:text-yellow-600 transition-all">Apply</a>
+      </div>
+
+      <p class="text-[9px] text-zinc-400 font-black uppercase tracking-[1em]">© 2025 MR GLOBAL EDUCATION PRO | KUALA LUMPUR, MALAYSIA | ALL RIGHTS RESERVED FOR EXCELLENCE</p>
+    </div>
+  </footer>
+
+  <script type="module" src="index.tsx"></script>
+  <script>
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('nav');
+      if (window.scrollY > 100) {
+        nav.classList.add('py-3', 'shadow-sm');
+        nav.classList.remove('py-4', 'mt-10');
+        nav.style.marginTop = '0';
+      } else {
+        nav.classList.remove('py-3', 'shadow-sm');
+        nav.classList.add('py-4', 'mt-10');
+        nav.style.marginTop = '40px';
+      }
+    });
+
+    window.handleApply = (e) => {
+      const name = document.getElementById('form-name').value;
+      const phone = document.getElementById('form-phone').value;
+      const major = document.getElementById('form-major').value || 'غير محدد';
+      const budget = document.getElementById('form-budget').value || 'غير محدد';
+      const date = document.getElementById('form-date').value;
+      const needs = document.getElementById('form-needs').value || 'لا يوجد تفاصيل إضافية';
+
+      const msg = `طلب استشارة تعليمية VIP (من الموقع):%0A----------------------%0A👤 الاسم: ${name}%0A📱 الواتساب: ${phone}%0A🎓 التخصص: ${major}%0A💰 الميزانية: ${budget}%0A📅 موعد التسجيل: ${date}%0A📝 الاحتياجات/المشاكل: ${needs}`;
+      
+      window.open(`https://wa.me/60143646834?text=${msg}`, '_blank');
+    };
+  </script>
+</body>
+</html>
